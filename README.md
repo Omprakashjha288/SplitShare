@@ -1,4 +1,5 @@
 # Shared Expense App
+![Dashboard](file:///C:/Users/ASUS/.gemini/antigravity-ide/brain/dc3251b1-be16-48eb-94d8fb96051/dashboard_screenshot_1781466267853.png)
 
 A full-stack expense sharing application that imports CSV transaction data, detects anomalies, stores expenses in PostgreSQL, generates expense splits, tracks import history, and calculates settlements between group members.
 
@@ -40,6 +41,25 @@ A full-stack expense sharing application that imports CSV transaction data, dete
 - Calculate balances between members
 - Minimize required transactions
 - Show exactly who owes whom
+## Demo
+
+Live demo not available.
+
+Run locally using:
+
+npm install
+npm run dev
+npm run server
+
+## Architecture
+
+React + Vite
+   ↓
+Express API
+   ↓
+Prisma ORM
+   ↓
+Neon PostgreSQL
 
 ---
 
