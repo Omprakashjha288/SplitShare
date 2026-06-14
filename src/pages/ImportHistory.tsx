@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_URL from "../services/api";
 
 interface ImportLog {
   id: string;
@@ -19,7 +20,7 @@ export default function ImportHistory() {
   const fetchHistory = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/imports");
+      const res = await axios.get(`${API_URL}/api/imports`);
       setLogs(res.data);
       setError(null);
     } catch (err: any) {

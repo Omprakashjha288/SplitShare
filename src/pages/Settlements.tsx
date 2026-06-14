@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_URL from "../services/api";
 
 interface Person {
   userId: string;
@@ -27,7 +28,7 @@ export default function Settlements() {
   const fetchSettlements = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/settlements");
+      const res = await axios.get(`${API_URL}/api/settlements`);
       setData(res.data);
       setError(null);
     } catch (err: any) {
