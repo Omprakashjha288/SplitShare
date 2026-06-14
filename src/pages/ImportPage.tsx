@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import type { DragEvent, ChangeEvent } from "react";
 import Papa from "papaparse";
 import axios from "axios";
+import API_URL from "../services/api";
 
 interface Row {
   [key: string]: string;
@@ -88,7 +89,7 @@ export default function ImportPage() {
     if (!rows.length) return;
     setImportStatus("loading");
     try {
-      const res = await axios.post("http://localhost:5000/api/import", {
+      const res = await axios.post(`${API_URL}/api/import`, {
         rows,
         filename,
         flagged: anomalies.length,
