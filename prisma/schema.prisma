@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name String @unique
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  paidExpenses     Expense[]
+  groupMemberships GroupMember[]
+  settlementsFrom  Settlement[]   @relation("SettlementFrom")
+  settlementsTo    Settlement[]   @relation("SettlementTo")
+  splits           ExpenseSplit[]
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name String @unique
+  createdAt DateTime @default(now())
+
+  members     GroupMember[]
+  expenses    Expense[]
+  settlements Settlement[]
+}
+
+model GroupMember {
+  id       String    @id @default(cuid())
+  groupId  String
+  userId   String
+  joinedAt DateTime
+  leftAt   DateTime?
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+}
+
+model Expense {
+  id           String   @id @default(cuid())
+  groupId      String
+  paidById     String
+  description  String
+  amount       Decimal  @db.Decimal(10, 2)
+  currency     String   @default("INR")
+  amountInr    Decimal  @db.Decimal(10, 2)
+  splitType    String
+  date         DateTime
+  notes        String?
+  isSettlement Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  group  Group          @relation(fields: [groupId], references: [id])
+  paidBy User           @relation(fields: [paidById], references: [id])
+  splits ExpenseSplit[]
+}
+
+model ExpenseSplit {
+  id        String  @id @default(cuid())
+  expenseId String
+  userId    String
+  amount    Decimal @db.Decimal(10, 2)
+
+  expense Expense @relation(fields: [expenseId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model Settlement {
+  id         String   @id @default(cuid())
+  groupId    String
+  fromUserId String
+  toUserId   String
+  amount     Decimal  @db.Decimal(10, 2)
+  currency   String   @default("INR")
+  date       DateTime
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id])
+
+  fromUser User @relation("SettlementFrom", fields: [fromUserId], references: [id])
+  toUser   User @relation("SettlementTo", fields: [toUserId], references: [id])
+}
+
+model ImportLog {
+  id         String   @id @default(cuid())
+  filename   String
+  importedAt DateTime @default(now())
+  totalRows  Int
+  imported   Int
+  skipped    Int
+  flagged    Int
+  anomalies  Json
+}
